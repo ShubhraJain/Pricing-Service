@@ -22,9 +22,9 @@ module.exports = {
     });
   },
 
-  getSurgeAndDrivers: (city, hoursPastMidnight) => {
+  getSurgeAndDrivers: (city, hoursPastMidnight, day) => {
     return new Promise(function(resolve, reject) {
-      client.hgetall(`${city}:${hoursPastMidnight}`, function(err, data) {
+      client.hgetall(`${city}:${day}:${hoursPastMidnight}`, function(err, data) {
         if (err) {
           reject(err);
         } else {

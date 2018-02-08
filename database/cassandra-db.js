@@ -1,21 +1,43 @@
 const cassandra = require('cassandra-driver');
 const client = new cassandra.Client({
     contactPoints: ['127.0.0.1'], 
-    keyspace: 'historical_data'
+    keyspace: 'test_hist_data'
 });
-// const random = require('random-world');
 
-// console.log(random.latlong());
 module.exports = {
-  getSurgeAndDrivers: (city, hoursPastMidnight, day) => {
-      const query = `SELECT * FROM historical_data.aggregated_data where 
-      city=? and day=? and time_interval=?`;
-    return client.execute(query, [ city, day, hoursPastMidnight ], {prepare: true})
-        .then(result => {
-          // console.log('query', query);
-          console.log('Success!');
-          return result.rows;
-        })
-        .catch(error => console.log(error));
-    }
+  getSurgeAndDrivers: (day, timeInterval, city) => {
+    const query = `SELECT * FROM test_hist_data.test_data WHERE 
+    day=? AND time_interval=? AND city=?`;
+    return client.execute(query, [ day, timeInterval, city ], {prepare: true})
+      .then(result => {
+        return result.rows;
+      })
+      .catch(error => {
+        console.log('error inside getSurgeAndDrivers', error)
+    })
+  },
+
+  getAvailableDriversCount: (city) => {
+    const query = `SELECT * FROM test_hist_data.test_drivers_count WHERE city=?`;
+    return client.execute(query, [ city], { prepare: true })
+      .then(result => {
+        return result.rows;
+      })
+      .catch(error => console.log('error inside getAvailableDriversCount', city + '\n' + error));
+  },
+
+  getDataForAnInterval: (day, timeInterval) => {
+    const query =  `SELECT * FROM test_hist_data.test_data WHERE day=? AND time_interval=?`;
+    return client.eachRow(query, [ day, timeInterval ], { autoPage: true, prepare: true }, 
+      (n, row) => {
+        // console.log('rows:-------------------', n);
+        return row;
+      });
+  },
+
+  updateHistoricalData: (day, timeInterval, city, avgDrivers, avgSurge) => {
+    const query = `INSERT INTO test_hist_data.test_data (day, time_interval, city, 
+                   avg_drivers, avg_surge) VALUES (?, ?, ?, ?, ?)`;
+    return client.execute(query, [ day, timeInterval, city, avgDrivers, avgSurge ], {prepare: true});
   }
+}

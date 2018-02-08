@@ -11,10 +11,6 @@ module.exports = {
   getDistanceFromLatLonInKm: (lat1,lon1,lat2,lon2) => {
     // lat1, lon1, lat2, lon2 are randomly generated just for testing purposes.
     // in production, this will be coming from client
-    var lat1 = random.lat();
-    var lat2 = random.lat();
-    var lon1 = random.long();
-    var lon2 = random.long();
     var radius = 6371; // Radius of the earth in km
     var dLat = deg2rad(lat2-lat1);  // deg2rad below
     var dLon = deg2rad(lon2-lon1); 
@@ -24,8 +20,8 @@ module.exports = {
       Math.sin(dLon/2) * Math.sin(dLon/2)
       ; 
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    var d = radius * c; // Distance in km
-    return d.toFixed(2);
+    var d = parseFloat((radius * c).toFixed(2)); // Distance in km
+    return d;
   },
 
   calculateRidefare: (distance) => {
@@ -71,3 +67,24 @@ module.exports = {
   //   });
   // }
 }
+
+
+// var getDistanceFromLatLonInKm = (lat1,lon1,lat2,lon2) => {
+//     // lat1, lon1, lat2, lon2 are randomly generated just for testing purposes.
+//     // in production, this will be coming from client
+//     var radius = 6371; // Radius of the earth in km
+//     var dLat = deg2rad(lat2-lat1);  // deg2rad below
+//     var dLon = deg2rad(lon2-lon1); 
+//     var a = 
+//       Math.sin(dLat/2) * Math.sin(dLat/2) +
+//       Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+//       Math.sin(dLon/2) * Math.sin(dLon/2)
+//       ; 
+//     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+//     var d = parseFloat((radius * c).toFixed(2)); // Distance in km
+//     console.log(typeof d);
+//     return d;
+//   }
+
+//   console.log(getDistanceFromLatLonInKm(
+//       37.788164, -122.508212, 47.732895, -122.425989));

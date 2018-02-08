@@ -22,3 +22,7 @@ config.json
 
 dataFiles/
 
+server/newrelic_agent.log
+artillery.csv
+artillery.yaml
+newrelic.js
