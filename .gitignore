@@ -3,7 +3,6 @@ extras/
 package-lock.json
 
 redis-4.0.7/
-redis-4.0.7.tar.gz
 
 # Logs
 logs
