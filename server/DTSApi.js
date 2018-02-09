@@ -12,19 +12,4 @@ module.exports = {
       console.error('inside catch', err);
     });
   },
-  // getPrice: (userId, city, pickUpLat, pickUpLong, dropOffLat, dropOffLong) => {
-  //   axios.post('/price', { userId: userId,
-  //    city: "Mumbai",
-  //    pickUpLat: pickUpLat,
-  //    pickUpLong: pickUpLong,
-  //    dropOffLat: dropOffLat,
-  //    dropOffLong: dropOffLong
-  //   })
-  //   .then( response => {
-  //     console.log(response);
-  //   })
-  //   .catch(err => {
-  //     console.log(err);
-  //   })
-  // }
 }

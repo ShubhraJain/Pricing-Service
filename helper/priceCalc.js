@@ -40,7 +40,7 @@ module.exports = {
     } else if (distance >= 25) {
       fare = baseFare + 1.2 * distance; // $1.7/km 
     }
-    return fare.toFixed(2);
+    return parseFloat(fare.toFixed(2));
   },
 
   // ride duration

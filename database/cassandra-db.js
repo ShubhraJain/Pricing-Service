@@ -13,7 +13,8 @@ module.exports = {
         return result.rows;
       })
       .catch(error => {
-        console.log('error inside getSurgeAndDrivers', error)
+        // console.log('error inside getSurgeAndDrivers', error);
+        return null;
     })
   },
 
@@ -23,17 +24,23 @@ module.exports = {
       .then(result => {
         return result.rows;
       })
-      .catch(error => console.log('error inside getAvailableDriversCount', city + '\n' + error));
+      .catch(error => {
+        // console.log('error inside getAvailableDriversCount', city + '\n' + error);
+        return null;
+      })
   },
 
-  getDataForAnInterval: (day, timeInterval) => {
-    const query =  `SELECT * FROM test_hist_data.test_data WHERE day=? AND time_interval=?`;
-    return client.eachRow(query, [ day, timeInterval ], { autoPage: true, prepare: true }, 
-      (n, row) => {
-        // console.log('rows:-------------------', n);
-        return row;
-      });
-  },
+  // getDataForAnInterval: (day, timeInterval) => {
+  //   const query =  `SELECT * FROM test_hist_data.test_data WHERE day=? AND time_interval=?`;
+  //   return client.stream(query, [ day, timeInterval ], { autoPage: true, prepare: true, setFetchSize: 10000 }) 
+  //     .then(result => {
+  //       console.log('fetching rows')
+  //       return result.rows;
+  //     })
+  //     .catch(error => {
+  //       console.log(error);
+  //     })
+  // },
 
   updateHistoricalData: (day, timeInterval, city, avgDrivers, avgSurge) => {
     const query = `INSERT INTO test_hist_data.test_data (day, time_interval, city, 

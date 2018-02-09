@@ -5,21 +5,25 @@ const Router = require('koa-router');
 const calculator = require('../helper/priceCalc.js');
 const db = require('../database/cassandra-db.js');
 const moment = require('moment');
-var AWS = require('aws-sdk');
+const AWS = require('aws-sdk');
 const dtsApi = require('./DTSApi.js');
 const path = require('path');
 // const queueUrl = 'https://sqs.us-west-1.amazonaws.com/344911669843/eventLog';
 const queueUrl = 'https://sqs.us-west-1.amazonaws.com/344911669843/historical_data';
 const app = new Koa();
 const router = new Router(); 
-const port = process.env.PORT || 3000;
+
+var port = process.env.PORT || (process.argv[2] || 3000);
 AWS.config.loadFromPath(path.resolve(__dirname, '../config.json'));
 router.use(bodyParser());
 app.use(router.routes());
 
-app.listen(port, () => {
-  console.log('Koa is listening on port ' + port);
-});
+port = (typeof port === "number") ? port : 3000;
+if (!module.parent) { 
+  app.listen(port, function() {
+    console.log(`listening in on port ${port}`);
+  })
+}
 
 var getTimeInterval = () => {
   let hoursPastMidnight = moment().format('HH');
@@ -60,20 +64,20 @@ var getDay = () => {
   } 
 }
 
-// var timeIntervals = {};
+var timeIntervals = {};
 
 // var updateTimeIntervalsObject = async() => {
 //   var timeInt = getTimeInterval();
 //   var day = getDay();
-  // var result = await db.getDataForAnInterval(day, timeInt);
+//   var result = await db.getDataForAnInterval(day, timeInt);
 //   var obj = {};
-  // console.log('result: ', result);
-//   // result.forEach( (row) => {
-//   //   obj[row.city] = { avg_drivers: row.avg_drivers, 
-//   //                        avg_surge: row.avg_surge }
-//   // });
-//   // timeIntervals[timeInt] = obj;
-//   // console.log(Object.keys(obj).length);
+//   console.log('result: ', result);
+  // result.forEach( (row) => {
+  //   obj[row.city] = { avg_drivers: row.avg_drivers, 
+  //                        avg_surge: row.avg_surge }
+  // });
+  // timeIntervals[timeInt] = obj;
+  // console.log(Object.keys(obj).length);
 // }
 
 // updateTimeIntervalsObject();
@@ -92,20 +96,20 @@ router.post('/price', async(ctx) => {
     let params = [day, timeInterval, data.city];
     // console.time('DOUBLE PROMISE SPEED');
     let availablePromise = await db.getAvailableDriversCount(data.city); // from DTS Service
+    //------------------------------//
     // let availableDrivers = await db.getAvailableDriversCount(data.city); // from DTS Service
     // let availablePromise = dtsApi.getAvailableDrivers(data.city);
-    // console.log('All keys: ', timeIntervals[timeInterval][city], city);
     // let avgSurge = timeIntervals[timeInterval][city].avg_surge;
     // let avgDrivers = timeIntervals[timeInterval][city].avg_drivers;
     //------------------------------//
     let surgePromise = db.getSurgeAndDrivers(...params);
     let [availableDrivers, surgeAndDrivers] = await Promise.all([availablePromise, surgePromise]);
+    // console.log(availableDrivers[0].availabledrivers);
     // console.timeEnd('DOUBLE PROMISE SPEED');
     // console.time('ALOGRITHM SPEED');
     let avgSurge = parseFloat(surgeAndDrivers[0].avg_surge);
     let avgDrivers = parseInt(surgeAndDrivers[0].avg_drivers);
-    //------------------------------//
-    if (availableDrivers === 0) {
+    if (availableDrivers[0].availabledrivers === 0) {
       ctx.status = 200;
       ctx.body = {
         message: 'no drivers available'
@@ -135,15 +139,15 @@ router.post('/price', async(ctx) => {
         city: data.city
       };
       // send message to event logger queue
-      var message = {
-        userId: 2461, // will come from user 
-        surgeMultiplier: surge,
-        price: parseFloat(rideFare.toFixed(2)),
-        pickUpLocation: [data.pickUpLat, data.pickUpLong],
-        dropOffLocation: [data.dropOffLat, data.dropOffLong],
-        priceTimestamp: priceTimestamp
-      };
-      sendMessage(message, queueUrl);
+      // var message = {
+      //   userId: 2461, // will come from user 
+      //   surgeMultiplier: surge,
+      //   price: parseFloat(rideFare.toFixed(2)),
+      //   pickUpLocation: [data.pickUpLat, data.pickUpLong],
+      //   dropOffLocation: [data.dropOffLat, data.dropOffLong],
+      //   priceTimestamp: priceTimestamp
+      // };
+      // sendMessage(message, queueUrl);
     } 
   }
   catch (err) {
@@ -152,24 +156,25 @@ router.post('/price', async(ctx) => {
   }
 });
 
-var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
-// Sending a message
-var sendMessage = (msgBody, queueUrl) => {
-  var params = {
-    MessageBody: JSON.stringify(msgBody),
-    QueueUrl: queueUrl,
-    DelaySeconds: 0
-  };
-  return new Promise ((resolve, reject) => {
-    sqs.sendMessage(params, function(err, data) {
-      if(err) {
-        reject(err);
-      }
-      else {
-        // console.log('message sent successfully! ', data);
-        resolve(data);
-      }
-    });   
-  });
-};
+// var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
+// // Sending a message
+// var sendMessage = (msgBody, queueUrl) => {
+//   var params = {
+//     MessageBody: JSON.stringify(msgBody),
+//     QueueUrl: queueUrl,
+//     DelaySeconds: 0
+//   };
+//   return new Promise ((resolve, reject) => {
+//     sqs.sendMessage(params, function(err, data) {
+//       if(err) {
+//         reject(err);
+//       }
+//       else {
+//         // console.log('message sent successfully! ', data);
+//         resolve(data);
+//       }
+//     });   
+//   });
+// };
 
+module.exports = app;

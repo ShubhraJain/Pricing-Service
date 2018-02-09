@@ -1,19 +1,7 @@
-// const Koa = require('koa');
-// const bodyParser = require('koa-bodyparser');
-// const Router = require('koa-router');
 const db = require('../database/cassandra-db.js');
 var AWS = require('aws-sdk');
 const path = require('path');
-// const app = new Koa();
-// const router = new Router(); 
-// const port = process.env.PORT || 3000;
 AWS.config.loadFromPath(path.resolve(__dirname, '../config.json'));
-// router.use(bodyParser());
-// app.use(router.routes());
-
-// app.listen(port, () => {
-//   console.log('Koa is listening on port ' + port);
-// });
 
 // create a SQS service object
 var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
