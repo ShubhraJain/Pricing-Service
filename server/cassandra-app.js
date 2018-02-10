@@ -8,10 +8,10 @@ const moment = require('moment');
 const AWS = require('aws-sdk');
 const dtsApi = require('./DTSApi.js');
 const path = require('path');
-// const queueUrl = 'https://sqs.us-west-1.amazonaws.com/344911669843/eventLog';
-const queueUrl = 'https://sqs.us-west-1.amazonaws.com/344911669843/historical_data';
+// const queueUrl = 'https://sqs.us-west-1.amazonaws.com/344911669843/historical_data';
 const app = new Koa();
 const router = new Router(); 
+const getMessages = require("../worker/worker.js");
 
 var port = process.env.PORT || (process.argv[2] || 3000);
 AWS.config.loadFromPath(path.resolve(__dirname, '../config.json'));
@@ -21,7 +21,7 @@ app.use(router.routes());
 port = (typeof port === "number") ? port : 3000;
 if (!module.parent) { 
   app.listen(port, function() {
-    console.log(`listening in on port ${port}`);
+    console.log(`Koa listening on port ${port}`);
   })
 }
 
@@ -64,23 +64,26 @@ var getDay = () => {
   } 
 }
 
-var timeIntervals = {};
+// var timeIntervals = {};
 
-// var updateTimeIntervalsObject = async() => {
+// var updateTimeIntervalsObject = async () => {
 //   var timeInt = getTimeInterval();
 //   var day = getDay();
 //   var result = await db.getDataForAnInterval(day, timeInt);
-//   var obj = {};
+//   // var obj = {};
 //   console.log('result: ', result);
-  // result.forEach( (row) => {
-  //   obj[row.city] = { avg_drivers: row.avg_drivers, 
-  //                        avg_surge: row.avg_surge }
-  // });
-  // timeIntervals[timeInt] = obj;
-  // console.log(Object.keys(obj).length);
+//   // result.forEach( (row) => {
+//   //   obj[row.city] = { avg_drivers: row.avg_drivers, 
+//   //                        avg_surge: row.avg_surge }
+//   // });
+//   // timeIntervals[timeInt] = obj;
+//   // console.log(Object.keys(obj).length);
 // }
 
 // updateTimeIntervalsObject();
+
+
+
 
 router.post('/price', async(ctx) => {
   // console.time('FULL RESPONSE TIME');
@@ -96,15 +99,14 @@ router.post('/price', async(ctx) => {
     let params = [day, timeInterval, data.city];
     // console.time('DOUBLE PROMISE SPEED');
     let availablePromise = await db.getAvailableDriversCount(data.city); // from DTS Service
-    //------------------------------//
+    //--------------------------------------------------------------------------------------//
     // let availableDrivers = await db.getAvailableDriversCount(data.city); // from DTS Service
-    // let availablePromise = dtsApi.getAvailableDrivers(data.city);
+    // let availablePromise = dtsApi.getAvailableDrivers(data.city); // from api
     // let avgSurge = timeIntervals[timeInterval][city].avg_surge;
     // let avgDrivers = timeIntervals[timeInterval][city].avg_drivers;
-    //------------------------------//
+    //--------------------------------------------------------------------------------------//
     let surgePromise = db.getSurgeAndDrivers(...params);
     let [availableDrivers, surgeAndDrivers] = await Promise.all([availablePromise, surgePromise]);
-    // console.log(availableDrivers[0].availabledrivers);
     // console.timeEnd('DOUBLE PROMISE SPEED');
     // console.time('ALOGRITHM SPEED');
     let avgSurge = parseFloat(surgeAndDrivers[0].avg_surge);
@@ -147,7 +149,14 @@ router.post('/price', async(ctx) => {
       //   dropOffLocation: [data.dropOffLat, data.dropOffLong],
       //   priceTimestamp: priceTimestamp
       // };
-      // sendMessage(message, queueUrl);
+      // var message = {
+      //   day: 4,
+      //   timeInterval: 120,
+      //   city: 'seattle',
+      //   avgDrivers: 120,
+      //   avgSurge: 3.9
+      // }
+      // sendMessageToQueue(message, queueUrl);
     } 
   }
   catch (err) {
@@ -156,25 +165,27 @@ router.post('/price', async(ctx) => {
   }
 });
 
-// var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
-// // Sending a message
-// var sendMessage = (msgBody, queueUrl) => {
-//   var params = {
-//     MessageBody: JSON.stringify(msgBody),
-//     QueueUrl: queueUrl,
-//     DelaySeconds: 0
-//   };
-//   return new Promise ((resolve, reject) => {
-//     sqs.sendMessage(params, function(err, data) {
-//       if(err) {
-//         reject(err);
-//       }
-//       else {
-//         // console.log('message sent successfully! ', data);
-//         resolve(data);
-//       }
-//     });   
-//   });
-// };
+var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
+// Sending a message
+var sendMessageToQueue = (msgBody, queueUrl) => {
+  var params = {
+    MessageBody: JSON.stringify(msgBody),
+    QueueUrl: queueUrl,
+    DelaySeconds: 0
+  };
+  return new Promise ( (resolve, reject) => {
+    sqs.sendMessage(params, function(err, data) {
+      if(err) {
+        reject(err);
+      }
+      else {
+        // console.log('message sent successfully! ', data);
+        resolve(data);
+      }
+    });   
+  });
+};
+
+// getMessages.getMessages()
 
 module.exports = app;

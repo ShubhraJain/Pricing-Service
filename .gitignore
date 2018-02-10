@@ -25,3 +25,13 @@ server/newrelic_agent.log
 artillery.csv
 artillery.yaml
 newrelic.js
+
+.nyc_output/
+newrelic_agent.log
+
+test/coverage
+test/newrelic_agent.log
+test.csv
+
+
+
