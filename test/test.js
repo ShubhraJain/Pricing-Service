@@ -24,90 +24,90 @@ describe('Get Distance between 2 cooridnates ', () => {
   });
 });
 
-describe('Gets ride duration', () => {
+xdescribe('Gets ride duration', () => {
   it('Should return the duration of a ride if distance travelled is 10kms', async () => {
     var duration = await calculator.rideDuration(10);
     expect(duration).to.eql(20);
   });
 });
 
-describe('Calculate ride fare for distance less than 1km', () => {
+xdescribe('Calculate ride fare for distance less than 1km', () => {
   it('Fare should be 5', async () => {
     var fare = await calculator.calculateRidefare(1);
     expect(fare).to.eql(5)
   });
 });
 
-describe('Calculate ride fare for 3km distance', () => {
+xdescribe('Calculate ride fare for 3km distance', () => {
   it('Fare should be 5', async () => {
     var fare = await calculator.calculateRidefare(3);
     expect(fare).to.eql(11)
   });
 });
 
-describe('Calculate ride fare for 6km distance', () => {
+xdescribe('Calculate ride fare for 6km distance', () => {
   it('Fare should be for 6km', async () => {
     var fare = await calculator.calculateRidefare(6);
     expect(fare).to.eql(15.8)
   });
 });
 
-describe('Calculate ride fare for 8km', () => {
+xdescribe('Calculate ride fare for 8km', () => {
   it('Fare should be 8kms', async () => {
     var fare = await calculator.calculateRidefare(8);
     expect(fare).to.eql(18.2)
   });
 });
 
-describe('Calculate ride fare for distance of 100km', () => {
+xdescribe('Calculate ride fare for distance of 100km', () => {
   it('Fare should be 125', async () => {
     var fare = await calculator.calculateRidefare(100);
     expect(fare).to.eql(125)
   });
 });
 
-describe('Get available Drivers in Lido' , function() {
+xdescribe('Get available Drivers in Lido' , function() {
   it('Should return available Drivers in Lido', async () => {
     var drivers = await db.getAvailableDriversCount('Lido');
     expect(drivers[0].availabledrivers).to.eql(64);
   });
 });
 
-describe('Query with wrong data' , function() {
+xdescribe('Query with wrong data' , function() {
   it('Should return error', async () => {
     var drivers = await db.getAvailableDriversCount(4839);
     expect(drivers).to.eql(null);
   });
 });
 
-describe('Get average drivers in Dushanbe on Wednesday at 11am', () => {
+xdescribe('Get average drivers in Dushanbe on Wednesday at 11am', () => {
   it('Should return average drivers in Dushanbe on Wednesday at 11am', async () => {
     var data = await db.getSurgeAndDrivers(3, 66, 'Dushanbe');
     expect(data[0].avg_drivers).to.eql(23);
   });
 });
 
-describe('Get results for bad data', () => {
+xdescribe('Get results for bad data', () => {
   it('Should return error', async () => {
     var data = await db.getSurgeAndDrivers(3, 'hello', 'Dushanbe');
     expect(data).to.eql(null);
   });
 });
 
-describe('Query for unexisting record', () => {
+xdescribe('Query for unexisting record', () => {
   it('Should return an empty object for city that does not exist', async () => {
     var data = await db.getSurgeAndDrivers(6, 23, 'Sunnyvale');
     expect(data.length).to.eql(0);
   });
 });
 
-describe('It should respond back with a json object', () => {
+xdescribe('It should respond back with a json object', () => {
   it('Should respond back with a json object', () => {
 
   })
 })
 
-describe('It should respond back with a json object', () => {
+xdescribe('It should respond back with a json object', () => {
   it('Should respond back with a json object', () => {
     let body = {
       'city': 'Floreal',
@@ -126,7 +126,7 @@ describe('It should respond back with a json object', () => {
   });
 });
 
-describe('No drivers available in the city', () => {
+xdescribe('No drivers available in the city', () => {
   it('Should return message of no drivers available', async () => {
     let body = {
       'city': 'Rensselaer',
@@ -145,7 +145,7 @@ describe('No drivers available in the city', () => {
   });
 });
 
-describe('Bad request', () => {
+xdescribe('Bad request', () => {
   it('Should return error if data is bad', async () => {
     let body = {
       "pickUpLat": "37.788164",

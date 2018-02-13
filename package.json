@@ -4,6 +4,7 @@
   "description": "",
   "main": "server/app.js",
   "scripts": {
+    "start": "node server/cassandra-app.js",
     "test": "nyc mocha"
   },
   "keywords": [],

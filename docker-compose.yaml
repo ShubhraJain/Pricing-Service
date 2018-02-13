@@ -1,0 +1,13 @@
+version: '3'
+services:
+  web:
+    image: "shubhra/hollacabs:node"
+    links:
+      - cassandra
+    volumes: 
+      - "/usr/src/Pricing-service"
+  
+  cassandra:
+    image: "shubhra/hollacabs:cassandra"
+    volumes: 
+      - "/usr/src/cassandra"

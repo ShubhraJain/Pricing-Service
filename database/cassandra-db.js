@@ -42,24 +42,24 @@ module.exports = {
   //     })
   // },
 
-  getDataForAnInterval: (day, timeInterval) => {
-    const query = `SELECT * FROM test_hist_data.sample WHERE day=? AND time_interval=? limit 10`;
-    var obj = {};
-    return client.stream(query, [ day, timeInterval ], { autoPage: true, prepare: true})
-      .on('readable', function () {
-        var row;
-        while (row = this.read()) {
-          // console.log(row);
-          obj[row.city] = {avg_drivers: row.avg_drivers,
-                           avg_surge: row.avg_surge}
-        }
-        console.log('this is the final obj', obj);
-        return obj;
-      })
-      .on('end', function () {
-        console.log('reached end');
-      });   
-  },
+  // getDataForAnInterval: (day, timeInterval) => {
+  //   const query = `SELECT * FROM test_hist_data.sample WHERE day=? AND time_interval=? limit 10`;
+  //   var obj = {};
+  //   return client.stream(query, [ day, timeInterval ], { autoPage: true, prepare: true})
+  //     .on('readable', function () {
+  //       var row;
+  //       while (row = this.read()) {
+  //         // console.log(row);
+  //         obj[row.city] = {avg_drivers: row.avg_drivers,
+  //                          avg_surge: row.avg_surge}
+  //       }
+  //       console.log('this is the final obj', obj);
+  //       return obj;
+  //     })
+  //     .on('end', function () {
+  //       console.log('reached end');
+  //     });   
+  // },
 
   updateHistoricalData: (day, timeInterval, city, avgDrivers, avgSurge) => {
     const query = `INSERT INTO test_hist_data.test_data (day, time_interval, city, 
@@ -74,16 +74,16 @@ module.exports = {
     })
   },
 
-  getFromSample: (day, timeInterval, city) => {
-    const query = `SELECT * FROM test_hist_data.sample WHERE 
-    day=? AND time_interval=? AND city=?`;
-    return client.execute(query, [ day, timeInterval, city ], {prepare: true})
+  getFromSample: (day, timeInterval) => {
+    const query = `SELECT * FROM test_hist_data.test_data_with_decimal WHERE 
+                   day=? AND time_interval=?`;
+    return client.execute(query, [ day, timeInterval ], {prepare: true, fetchSize: 10050})
       .then(result => {
         return result.rows;
       })
       .catch(error => {
         // console.log('error inside getSurgeAndDrivers', error);
-        return null;
+        return error;
     })
   } 
 }
