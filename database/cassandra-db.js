@@ -1,8 +1,12 @@
 const cassandra = require('cassandra-driver');
 const client = new cassandra.Client({
-    contactPoints: ['127.0.0.1'], 
+    contactPoints: ['172.31.4.181'], 
     keyspace: 'test_hist_data'
 });
+// const client = new cassandra.Client({
+//     contactPoints: ['172.17.0.3'], 
+//     keyspace: 'test_hist_data'
+// });
 
 module.exports = {
   getSurgeAndDrivers: (day, timeInterval, city) => {

@@ -53,8 +53,6 @@ var updateTimeIntervalsObject = async () => {
       console.log('deleting 143rd');
       delete timeIntervals[143];
     } else {
-      console.log('deleting smaller interval');
-      console.log('interval is: ', timeInt);
       delete timeIntervals[timeInt - 2];
     }
   } else if (Object.keys(timeIntervals).length === 1) {

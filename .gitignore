@@ -21,6 +21,8 @@ pids
 config.json
 
 dataFiles/
+database/file30.txt
+database/file31.txt
 
 server/newrelic_agent.log
 artillery.csv

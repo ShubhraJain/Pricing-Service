@@ -20,3 +20,6 @@ CREATE TABLE test_drivers_count (
   availableDrivers INT,  
   PRIMARY KEY (city)
 );
+
+copy test_data_with_decimal from '/usr/src/cassandra/file30.txt' with delimiter = ',';
+copy test_drivers_count from '/usr/src/cassandra/file31.txt' with delimiter = ',';

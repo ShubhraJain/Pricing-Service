@@ -3,5 +3,5 @@ FROM cassandra:latest
 WORKDIR /usr/src/cassandra
 
 COPY schema.cql ./
-
-EXPOSE 9160
+COPY file30.txt ./
+COPY file31.txt ./
