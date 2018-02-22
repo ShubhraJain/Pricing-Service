@@ -3,10 +3,10 @@
 A stand-alone microservice for calculating ride fare based on surge multiplier and distance.
 
 ## Architecture
-![Pricing Microservice](https://i.imgur.com/RnVdMqY.png)
+![Pricing Microservice](https://i.imgur.com/waJGQVT.png)
 
 ## Tech Stack:
-* Nodejs
+Markup: * Nodejs
 * Koa
 * Cassandra
 * Docker
@@ -14,3 +14,6 @@ A stand-alone microservice for calculating ride fare based on surge multiplier a
 * Mocha (Test-Driven Development)
 
 ## Getting started
+These instructions will get you a copy of the project up and running on your local machine.
+
+## Installation
