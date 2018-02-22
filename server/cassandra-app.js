@@ -160,7 +160,8 @@ router.post('/price', async(ctx) => {
 });
 
 var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
-// Sending a message
+
+// Sending a message to the queue
 var sendMessageToQueue = (msgBody, queueUrl) => {
   var params = {
     MessageBody: JSON.stringify(msgBody),
@@ -173,13 +174,13 @@ var sendMessageToQueue = (msgBody, queueUrl) => {
         reject(err);
       }
       else {
-        // console.log('message sent successfully! ', data);
         resolve(data);
       }
     });   
   });
 };
 
+// receive messages from queue that event logger microservice sends in
 // getMessages.getMessages()
 
 module.exports = app;

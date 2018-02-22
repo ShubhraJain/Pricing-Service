@@ -1,18 +1,9 @@
 // const Koa = require('koa');
-// const bodyParser = require('koa-bodyparser');
 const calculator = require('../helper/priceCalc.js');
 const db = require('../database/cassandra-db.js');
 const server = require('../server/cassandra-app.js');
-// const request = require('jest');
-// const Router = require('koa-router');
 const supertest = require('supertest');
 const expect = require('chai').expect;
-
-
-// const app = new Koa();
-// const router = new Router(); 
-// router.use(bodyParser());
-// app.use(router.routes());
 
 const request = supertest.agent(server.listen());
 
