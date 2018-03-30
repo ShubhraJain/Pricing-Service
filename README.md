@@ -13,7 +13,7 @@ A stand-alone microservice for calculating ride fare based on surge multiplier a
 * AWS EC2, SQS
 * Mocha (Test-Driven Development)
 
-### Getting started
+<!-- ### Getting started
 These instructions will get you a copy of the project up and running on your local machine.
 
 ### Installation
@@ -27,4 +27,4 @@ This micro service uses Cassandra database. Follow commands from https://gist.gi
 Start the server via:
 ```sh
 npm start
-```
+``` -->
